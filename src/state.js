@@ -21,8 +21,8 @@ function initProps() { }
 function initMethods() { }
 
 function initData(vm) { // 数据的初始化操作
-    // let data = vm.$options.data;
-    // vm._data = data = typeof data == 'function' ? data.call(vm) : data;
+    let data = vm.$options.data;
+    vm._data = data = typeof data == 'function' ? data.call(vm) : data;
     // // 数据的劫持方案 对象Object.defineProperty
     // // 数组 单独处理的
 
@@ -30,7 +30,7 @@ function initData(vm) { // 数据的初始化操作
     // for (let key in data) {
     //     proxy(vm, '_data', key);
     // }
-    // observe(data);
+    observe(data);
 
 }
 function initComputed() { }
