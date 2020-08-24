@@ -1,3 +1,5 @@
+import { observe } from './observer/index'
+
 export function initState(vm) { // vm.$options
     const opts = vm.$options;
     if (opts.props) {
@@ -31,7 +33,6 @@ function initData(vm) { // 数据的初始化操作
     //     proxy(vm, '_data', key);
     // }
     observe(data);
-
 }
 function initComputed() { }
 function initWatch() { }
