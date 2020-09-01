@@ -83,6 +83,16 @@
       value: value
     });
   }
+  function proxy(vm, data, key) {
+    Object.defineProperty(vm, key, {
+      get: function get() {
+        return vm[data][key];
+      },
+      set: function set(newvalue) {
+        vm[data][key] = newvalue;
+      }
+    });
+  }
 
   var Observer = /*#__PURE__*/function () {
     function Observer(value) {
@@ -175,9 +185,10 @@
     vm._data = data = typeof data == 'function' ? data.call(vm) : data; // // 数据的劫持方案 对象Object.defineProperty
     // // 数组 单独处理的
     // // 当我去vm上取属性时 ，帮我将属性的取值代理到vm._data上
-    // for (let key in data) {
-    //     proxy(vm, '_data', key);
-    // }
+
+    for (var key in data) {
+      proxy(vm, '_data', key);
+    }
 
     observe(data);
   }
@@ -188,6 +199,26 @@
       var vm = this;
       vm.$options = options;
       initState(vm);
+
+      if (vm.$options.el) {
+        vm.$mount(vm.$options.el);
+      }
+    };
+
+    Vue.prototype.$mount = function (el) {
+      var vm = this;
+      var options = vm.$options;
+      el = document.querySelector(el);
+      vm.$el = el;
+
+      if (!options.render) {
+        // 没有render 将 template 转化为render
+        var template = options.template;
+
+        if (!template && el) {
+          template = el.outerHTML;
+        }
+      }
     };
   }
 

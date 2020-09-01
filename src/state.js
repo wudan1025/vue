@@ -1,4 +1,5 @@
 import { observe } from './observer/index'
+import { proxy } from './util.js'
 
 export function initState(vm) { // vm.$options
     const opts = vm.$options;
@@ -29,9 +30,9 @@ function initData(vm) { // 数据的初始化操作
     // // 数组 单独处理的
 
     // // 当我去vm上取属性时 ，帮我将属性的取值代理到vm._data上
-    // for (let key in data) {
-    //     proxy(vm, '_data', key);
-    // }
+    for (let key in data) {
+        proxy(vm, '_data', key);
+    }
     observe(data);
 }
 function initComputed() { }

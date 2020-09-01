@@ -5,3 +5,14 @@ export function defineProperty(target, key, value) {
         value
     })
 }
+
+export function proxy(vm, data, key) {
+    Object.defineProperty(vm, key, {
+        get() {
+            return vm[data][key];
+        },
+        set(newvalue) {
+            vm[data][key] = newvalue
+        }
+    })
+}
