@@ -8,6 +8,7 @@ class Observer {
         if (Array.isArray(value)) {
             // 重新定义原型上的方法
             value.__proto__ = arrayMethods;
+            // 数组中还有对象的情况
             this.observeArray(value)
         } else {
             // 对象监听
