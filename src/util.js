@@ -4,16 +4,15 @@ export function defineProperty(target, key, value) {
         configurable: false,
         value
     })
+
 }
 
 export function proxy(vm, data, key) {
     Object.defineProperty(vm, key, {
         get() {
-            console.log('get')
             return vm[data][key];
         },
         set(newvalue) {
-            console.log('set')
             vm[data][key] = newvalue
         }
     })
@@ -76,6 +75,45 @@ export function mergeOptions(parent, child) {
         }
     }
 
-    console.log(options)
+    // console.log(options)
     return options;
+}
+
+const callbacks = [];
+let pending = false;
+function flushCallbacks() {
+    while (callbacks.length) {
+        let cb = callbacks.shift();
+        cb();
+    } // 让nextTick中传入的方法依次执行
+    pending = false // 标识已经执行完毕
+}
+let timerFunc;
+if (Promise) {
+    timerFunc = () => {
+        Promise.resolve().then(flushCallbacks); // 异步处理更新
+    }
+} else if (MutationObserver) { // 可以监控dom变化,监控完毕后是异步更新
+    let observe = new MutationObserver(flushCallbacks);
+    let textNode = document.createTextNode(1); // 先创建一个文本节点
+    observe.observe(textNode, { characterData: true }); // 观测文本节点中的内容
+    timerFunc = () => {
+        textNode.textContent = 2; // 文中的内容改成2
+    }
+} else if (setImmediate) {
+    timerFunc = () => {
+        setImmediate(flushCallbacks)
+    }
+} else {
+    timerFunc = () => {
+        setTimeout(flushCallbacks)
+    }
+}
+export function nextTick(cb) { // 因为内部会调用nextTick 用户也会调用，但是异步只需要一次
+    callbacks.push(cb);
+    if (!pending) {
+        // vue3 里的nextTick原理就是promise.then 没有做兼容性处理了
+        timerFunc();// 这个方法是异步方法 做了兼容处理了
+        pending = true;
+    }
 }

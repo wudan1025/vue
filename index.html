@@ -10,6 +10,7 @@
 <body>
     <div id="app" style="color:red;font-size:20px">
         我是测试文本12
+        {{a}}
     </div>
     <script src="dist/umd/vue.js"></script>
     <script>
@@ -37,6 +38,25 @@
         });
         // 调试用
         window.vm = vm
+
+        // setTimeout(() => {
+        //     // console.log()
+        //     vm.a = 2
+        //     // debugger
+        // }, 2000);
+
+        setTimeout(() => {
+            vm.arr.push(123);
+            vm.arr.push(123);
+            vm.arr.push(123);
+            vm.arr.push(123);
+            vm.a = 100; // 如果更新数据 watcher.update()方法
+            console.log(vm.$el.innerHTML, '11111111111111')
+            vm.$nextTick(() => {
+                console.log(vm.$el.innerHTML, '22222222222222')
+            })
+        }, 1000);
+
     </script>
 </body>
 

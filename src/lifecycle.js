@@ -1,18 +1,14 @@
 import { patch } from "./vdom/patch";
+import Watcher from "./observer/watcher";
+
 
 export function lifecycleMixin(Vue) {
     Vue.prototype._update = function (vnode) {
         const vm = this;
         // console.log(vm.$el)
-        patch(vm.$el, vnode)
+        // 用新元素替换旧的
+        vm.$el = patch(vm.$el, vnode)
     }
-}
-
-
-export function mountComponent(vm, el) {
-    // 调用render方法去渲染 el属性
-    // 先调用render方法创建虚拟节点，在将虚拟节点渲染到页面上
-    vm._update(vm._render());
 }
 
 
@@ -32,6 +28,12 @@ export function mountComponent(vm, el) {
         callHook(vm, 'updated')
     }, true); // 渲染watcher 只是个名字
 
+    // ??
+    // setTimeout(() => {
+    //     watcher.get()
+    //     // vm._update(vm._render());
+    // }, 2000);
+
     // 要把属性 和 watcher绑定在一起 
 
     callHook(vm, 'mounted');
@@ -39,7 +41,6 @@ export function mountComponent(vm, el) {
 
 
 export function callHook(vm, hook) {
-    debugger
     // handlers 是个数组
     const handlers = vm.$options[hook]; // vm.$options.created  = [a1,a2,a3]
     if (handlers) {
